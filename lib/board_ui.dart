@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 class NoticeViewUi extends StatefulWidget {
   String group;
   String uid;
+  String? from;
 
-  NoticeViewUi(this.group, this.uid);
+  NoticeViewUi(this.group, this.uid, {this.from});
   @override
   _NoticeViewUi createState() => _NoticeViewUi();
 }
@@ -20,14 +21,14 @@ class _NoticeViewUi extends State<NoticeViewUi> {
   void initState() {
     super.initState();
     fetchData(widget.uid).then((value) => setState(() {
-          _data = value;
+          _data = value['data'];
         }));
   }
 
   Future<dynamic> fetchData(uid) async {
     String url =
         'http://127.0.0.1:5001/lineone-cgm/asia-northeast3/web-get?type=notice_read';
-    url += "&uid=" + 'rBwXPvUooVt3F2VRqJA1';
+    url += "&uid=" + uid;
     url += "&from=" + 'test';
 
     final response = await http.get(Uri.parse(url));
@@ -40,17 +41,14 @@ class _NoticeViewUi extends State<NoticeViewUi> {
 
   @override
   Widget build(BuildContext context) {
-    log('build ');
-    String orgName = '하나 초등학교';
-    String groupName = '코딩 A반';
-    String dateTime = '2023-10-20 오후 3시 20분 작성';
+    log('build ' + _data.toString());
 
     return Scaffold(
-        backgroundColor: Color(0xFFEEEEEE),
+        backgroundColor: const Color(0xFFEEEEEE),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           centerTitle: true,
-          title: Text(
+          title: const Text(
             '공지사항',
             // style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
           ),
@@ -59,28 +57,30 @@ class _NoticeViewUi extends State<NoticeViewUi> {
           child: _data == null
               ? Container(
                   alignment: Alignment.topCenter,
-                  padding: EdgeInsets.only(top: 100),
-                  child: CircularProgressIndicator(
+                  padding: const EdgeInsets.only(top: 100),
+                  child: const CircularProgressIndicator(
                     color: colorMain,
                   ),
                 )
               : Column(
                   children: [
                     Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 10),
                       width: double.infinity,
                       color: Colors.white,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            orgName + ' ' + groupName,
-                            style: TextStyle(
+                            _data['noticeTitle'],
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18),
                           ),
-                          Text(dateTime)
+                          Text(
+                            _data['noticeSubtitle'],
+                          )
                         ],
                       ),
                     ),
@@ -90,83 +90,39 @@ class _NoticeViewUi extends State<NoticeViewUi> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Container(
-                            margin:
-                                EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                            margin: const EdgeInsets.only(
+                                left: 10, right: 10, bottom: 5),
                             color: Colors.white,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(
+                                  padding: const EdgeInsets.only(
                                       top: 10, left: 15, right: 15),
-                                  child: Text('2'),
+                                  child: Text(_data['title']),
                                 ),
-                                // Container(
-                                //   margin: EdgeInsets.symmetric(horizontal: 20),
-                                //   width: double.infinity,
-                                //   height: 1,
-                                //   color: Colors.grey,
-                                // ),
-                                Divider(
+                                const Divider(
                                   indent: 15,
                                   endIndent: 15,
                                 ),
                                 Container(
-                                  padding: EdgeInsets.only(
+                                  padding: const EdgeInsets.only(
                                       left: 15, right: 15, bottom: 10),
-                                  child: Text('1'),
+                                  child: Text(_data['content']),
                                 )
                               ],
                             ),
                           ),
                           Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                            ),
-                            margin: EdgeInsets.only(
-                                left: 10, right: 10, bottom: 15, top: 10),
-                            child: Material(
-                                color: Colors.transparent,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                        child: InkWell(
-                                            onTap: () {},
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5)),
-                                            child: Container(
-                                                padding: EdgeInsets.all(10),
-                                                alignment: Alignment.center,
-                                                child: Text('4명 읽음')))),
-                                    Container(
-                                      color: Color(0xFFEFEFEF),
-                                      width: 2,
-                                      height: 20,
-                                    ),
-                                    Expanded(
-                                        child: InkWell(
-                                            onTap: () {},
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5)),
-                                            child: Container(
-                                                padding: EdgeInsets.all(10),
-                                                alignment: Alignment.center,
-                                                child: Text('미리보기')))),
-                                  ],
-                                )),
-                          ),
-                          Container(
                             alignment: Alignment.center,
-                            margin:
-                                EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                            padding: EdgeInsets.all(10),
+                            margin: const EdgeInsets.only(
+                                top: 10, left: 10, right: 10, bottom: 5),
+                            padding: const EdgeInsets.all(10),
                             // color: Colors.white,
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  '2024-01-10 수정됨 ',
-                                  '2024-01-10 수 ',
+                                  '출결 알리미',
                                 ].map((e) {
                                   return Text(e);
                                 }).toList()),
