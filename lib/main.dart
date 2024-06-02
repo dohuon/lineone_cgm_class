@@ -23,8 +23,19 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       initialRoute: '/',
       onGenerateRoute: Routes.router.generator,
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      //   useMaterial3: true,
+      // ),
+
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        appBarTheme: AppBarTheme(
+          centerTitle: true,
+          backgroundColor: Color(0xFFE8F5E9),
+          // foregroundColor: Colors.white
+        ),
         useMaterial3: true,
       ),
     );

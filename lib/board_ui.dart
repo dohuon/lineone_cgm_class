@@ -1,124 +1,181 @@
-
+import 'dart:convert';
 import 'dart:developer';
-import 'dart:math';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-class BoardUi extends StatefulWidget {
-  static const routeName = '/hello';
+class NoticeViewUi extends StatefulWidget {
+  String group;
+  String uid;
 
-  const BoardUi({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
+  NoticeViewUi(this.group, this.uid);
   @override
-  State<BoardUi> createState() => _BoardUi();
+  _NoticeViewUi createState() => _NoticeViewUi();
 }
 
-class _BoardUi extends State<BoardUi> {
-  int _counter = 0;
-
+class _NoticeViewUi extends State<NoticeViewUi> {
+  static const Color colorMain = Colors.green;
+  var _data;
 
   @override
   void initState() {
     super.initState();
-    // log('title ' + widget.title);
+    fetchData(widget.uid).then((value) => setState(() {
+          _data = value;
+        }));
   }
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  Future<dynamic> fetchData(uid) async {
+    String url =
+        'http://127.0.0.1:5001/lineone-cgm/asia-northeast3/web-get?type=notice_read';
+    url += "&uid=" + 'rBwXPvUooVt3F2VRqJA1';
+    url += "&from=" + 'test';
+
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load data');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // final args = ModalRoute.of(context)!.settings.arguments as _MyHomePageState;
-    // log('args ' + args.toString());
+    log('build ');
+    String orgName = '하나 초등학교';
+    String groupName = '코딩 A반';
+    String dateTime = '2023-10-20 오후 3시 20분 작성';
 
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: SingleChildScrollView(child: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-             Text(
-              RandomTextGenerator().generateRandomText(10000),
-            ),
-            Text(
-              '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineMedium,
-            ),
-          ],
+        backgroundColor: Color(0xFFEEEEEE),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Text(
+            '공지사항',
+            // style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+          ),
         ),
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-}
-
-class RandomTextGenerator {
-  final _random = Random();
-  final _characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789 ';
-
-  String generateRandomText(int length) {
-    String result = '';
-    for (int i = 0; i < length; i++) {
-      result += _characters[_random.nextInt(_characters.length)];
-    }
-    return result;
+        body: SafeArea(
+          child: _data == null
+              ? Container(
+                  alignment: Alignment.topCenter,
+                  padding: EdgeInsets.only(top: 100),
+                  child: CircularProgressIndicator(
+                    color: colorMain,
+                  ),
+                )
+              : Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                      width: double.infinity,
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            orgName + ' ' + groupName,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          Text(dateTime)
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            margin:
+                                EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                            color: Colors.white,
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      top: 10, left: 15, right: 15),
+                                  child: Text('2'),
+                                ),
+                                // Container(
+                                //   margin: EdgeInsets.symmetric(horizontal: 20),
+                                //   width: double.infinity,
+                                //   height: 1,
+                                //   color: Colors.grey,
+                                // ),
+                                Divider(
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: 15, right: 15, bottom: 10),
+                                  child: Text('1'),
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                            ),
+                            margin: EdgeInsets.only(
+                                left: 10, right: 10, bottom: 15, top: 10),
+                            child: Material(
+                                color: Colors.transparent,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: InkWell(
+                                            onTap: () {},
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            child: Container(
+                                                padding: EdgeInsets.all(10),
+                                                alignment: Alignment.center,
+                                                child: Text('4명 읽음')))),
+                                    Container(
+                                      color: Color(0xFFEFEFEF),
+                                      width: 2,
+                                      height: 20,
+                                    ),
+                                    Expanded(
+                                        child: InkWell(
+                                            onTap: () {},
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5)),
+                                            child: Container(
+                                                padding: EdgeInsets.all(10),
+                                                alignment: Alignment.center,
+                                                child: Text('미리보기')))),
+                                  ],
+                                )),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            margin:
+                                EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                            padding: EdgeInsets.all(10),
+                            // color: Colors.white,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  '2024-01-10 수정됨 ',
+                                  '2024-01-10 수 ',
+                                ].map((e) {
+                                  return Text(e);
+                                }).toList()),
+                          )
+                        ],
+                      ),
+                    )),
+                  ],
+                ),
+        ));
   }
 }
