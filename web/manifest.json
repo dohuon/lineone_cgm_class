@@ -1,8 +1,8 @@
 {
-    "name": "lineone_cgm_class",
-    "short_name": "lineone_cgm_class",
+    "name": "출결 문자 알리미",
+    "short_name": "출결 알리미",
     "start_url": ".",
-    "display": "standalone",
+    "display": "browser",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
     "description": "A new Flutter project.",
