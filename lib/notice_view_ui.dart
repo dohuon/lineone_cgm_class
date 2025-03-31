@@ -213,7 +213,8 @@ class _NoticeViewUi extends State<NoticeViewUi> {
                 ),
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                // mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     margin: const EdgeInsets.only(left: 0, right: 0, bottom: 5),
@@ -237,22 +238,39 @@ class _NoticeViewUi extends State<NoticeViewUi> {
                           padding: const EdgeInsets.only(
                               left: 15, right: 15, bottom: 10),
                           child: Text(_data['content']),
-                        )
+                        ),
+                        if (_data['images'] != null &&
+                            _data['images'].length > 0)
+                          Container(
+                              padding: EdgeInsets.all(10),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(_data['imageHost']
+                                      .replaceAll(
+                                          '{fileName}', _data['images'][0])))),
                       ],
                     ),
                   ),
                   Container(
+                    decoration: borderDecoration.copyWith(
+                        color: const Color(0xFFEEEEEE)),
+                    height: 4,
+                  ),
+                  Container(
                     alignment: Alignment.center,
                     margin: const EdgeInsets.only(
-                        top: 10, left: 10, right: 10, bottom: 5),
-                    padding: const EdgeInsets.all(10),
+                        top: 4, left: 10, right: 10, bottom: 4),
+                    padding: const EdgeInsets.all(2),
                     // color: Colors.white,
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // '출결 알리미',
+                          '출결 알리미',
                         ].map((e) {
-                          return Text(e);
+                          return Text(
+                            e,
+                            style: TextStyle(fontSize: 12),
+                          );
                         }).toList()),
                   )
                 ],

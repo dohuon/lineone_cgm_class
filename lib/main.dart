@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lineone_cgm_class/notice_view_ui.dart';
+import 'package:lineone_cgm_class/import/import_home_ui.dart';
+import 'package:lineone_cgm_class/import/import_web_ui.dart';
 
-import 'routes.dart';
+import 'notice_view_ui.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -16,15 +15,24 @@ void main() {
 
 final GoRouter _router = GoRouter(
   routes: <RouteBase>[
-    // GoRoute(
-    //     path: '/',
-    //     builder: (context, state) {
-    //       return MaterialPage(
-    //         child: NoticeViewUi('notice', uid, from: from),
-    //         key: state.pageKey,
-    //         name: '출결 알리미',
-    //       );
-    //     }),
+    GoRoute(
+        path: '/',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+            child: ImportHomeUi(),
+            key: state.pageKey,
+            name: '출결 알리미',
+          );
+        }),
+    GoRoute(
+        path: '/import',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+            child: ImportWebUi(),
+            key: state.pageKey,
+            name: '출결 알리미',
+          );
+        }),
     GoRoute(
         path: '/notice',
         pageBuilder: (context, state) {
