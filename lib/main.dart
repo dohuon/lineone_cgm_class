@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lineone_cgm_class/import/import_home_ui.dart';
 import 'package:lineone_cgm_class/import/import_web_ui.dart';
 
+import 'manage/manage_ui.dart';
 import 'notice_view_ui.dart';
 
 void main() {
@@ -34,6 +35,40 @@ final GoRouter _router = GoRouter(
           );
         }),
     GoRoute(
+        path: '/wronglink',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+            child: Material(
+              child: Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 10,
+                      children: [
+                    Text(
+                      '잘못 된 링크!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '관리자 인증을 시작했던 브라우저로\n돌아가서 인증을 진행해 주세요.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ])),
+            ),
+            key: state.pageKey,
+            name: '출결 알리미 관리자',
+          );
+        }),
+    GoRoute(
+        path: '/manager',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+            child: ManageUi(),
+            key: state.pageKey,
+            name: '출결 알리미 관리자',
+          );
+        }),
+    GoRoute(
         path: '/notice',
         pageBuilder: (context, state) {
           // final String uid = state.pathParameters['uid'] ?? 'uid';
@@ -51,6 +86,7 @@ final GoRouter _router = GoRouter(
 
 class MyApp extends StatelessWidget {
   /// Constructs a [MyApp]
+  static const Color colorMain = Colors.green;
   const MyApp({super.key});
 
   @override
