@@ -55,6 +55,20 @@ class PageAddress extends StatelessWidget {
                               ? await _readClipboard()
                               : await _readExcelFile();
                           if (result != null) {
+                            for (var item in result) {
+                              if (item.length == 4) {
+                                String? currentNumber = item[3];
+                                if (currentNumber != null) {
+                                  String cleanNumber = currentNumber.replaceAll(
+                                      RegExp(r'[^0-9]'), '');
+                                  if (cleanNumber.length == 10 &&
+                                      cleanNumber.startsWith('10')) {
+                                    cleanNumber = '0${cleanNumber}';
+                                  }
+                                  item[3] = cleanNumber;
+                                }
+                              }
+                            }
                             _callback(result);
                           }
                         })
